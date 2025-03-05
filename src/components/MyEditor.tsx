@@ -14,17 +14,13 @@ import { SchemaObject } from 'amis'
 
 function MyEditor({ theme,isEditor }: { theme: string ,isEditor:Boolean}) {
   const routeParam = useParams()
-  function refreshCode() {
-    const random = randomLenNum(4, true)
-    console.log('fresh', random)
-    setRandomStr(random)
-  }
+
 
   // 随机字符串
   const [randomStr, setRandomStr] = useState(randomLenNum(4, true))
 
   async function  save() {
-    // sessionStorage.setItem('amisSchema', JSON.stringify(value))
+    sessionStorage.setItem('amisSchema', JSON.stringify(value))
     const res = await loginService.putAmisDetail({id:routeParam.id,title:routeParam.title,amisJson:JSON.stringify(value),status:0})
     console.log(res)
     if(res.data.data) message.success('成功');
@@ -164,29 +160,7 @@ function MyEditor({ theme,isEditor }: { theme: string ,isEditor:Boolean}) {
           >
             <Input.Password />
           </Form.Item>
-          {/* <Form.Item
-            label="验证码"
-            name="code"
-            rules={[
-              {
-                required: true,
-                message: '请输入验证码',
-              },
-            ]}
-          >
-            <Row gutter={8}>
-              <Col span={12}>
-                <Input />
-              </Col>
-              <Col span={12}>
-                <img
-                  src={`${import.meta.env.VITE_HOSTNAME}code?randomStr=${randomStr}`}
-                  alt=""
-                  onClick={refreshCode}
-                />
-              </Col>
-            </Row>
-          </Form.Item> */}
+          
           <Form.Item
             wrapperCol={{
               offset: 8,

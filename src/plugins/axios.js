@@ -1,41 +1,46 @@
 import axios from 'axios'
-import { rootStore } from '@/store/root'
+import Cookies from 'js-cookie';
 
-const instance = axios.create({
-  baseURL: import.meta.env.VITE_PROXY,
-  headers: {
-    env: 'dev',
-  },
-})
+const configMethods = {
+  baseURL: import.meta.env.VITE_URL_API,
+  token: import.meta.env.VITE_TOKEN,
+}
 
-instance.interceptors.request.use((config) => {
-  if (config.noTreat) {
-    return config
+  axios.defaults.timeout = 60000
+
+  axios.defaults.validateStatus = function (status) {
+    return status >= 200 && status <= 500 // 默认的
   }
-  config.headers.Authorization =
-    `Bearer ${rootStore.auth.accessToken}` || localstorage.getItem('pig-access_token')?.content
 
-  return config
-})
+  axios.defaults.withCredentials = true // 跨域请求时发送Cookie
 
-instance.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  (error) => {
-    const { response } = error
-    if (response.status === 424) {
-      rootStore.auth.clearToken()
-    } else if (response.status === 401) {
-      // 401 Unauthorized
-      // todo 跳转登录页
-      rootStore.auth.clearToken()
-    } else if (response.status === 428) {
-      alert(response.data.msg)
-    }
-    console.log(error)
-    return response
+  const baseRequestConfig = {
+    baseURL:configMethods.baseURL
   }
-)
+  
+  const instancs = axios.create(baseRequestConfig)
+    instancs.interceptors.request.use(
+      (config) => {
+        console.log(configMethods)
+        const token =  Cookies.get(configMethods.token)
+        if (token) {
+          config.headers['Authorization'] = token // token
+        }
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      }
+    )
+    instancs.interceptors.response.use(
+      (res) => {
+        resolve(res)
+        return res
+      },
+      (error) => {
+        return Promise.reject(new Error(error))
+      }
+    )
+  export default instancs
 
-export default instance
+ 

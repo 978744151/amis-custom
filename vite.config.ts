@@ -56,7 +56,7 @@ export default defineConfig(({ mode }) => {
   console.log('hostname:', env.VITE_HOSTNAME)
   return {
     // base: "./",
-    base: '/tenant/',
+    base: '/',
     plugins: [
       // react({
       //   babel: {
@@ -98,9 +98,9 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 8000,
       proxy: {
-        '/admin-api': {
+        '/api': {
           // target: "http://code-backend.cnsaas.com/",
-          target: env.VITE_HOSTNAME,
+          target:'http://user-api.qa.gpyh.com/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/admin-api/, ''),
         },

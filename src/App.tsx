@@ -30,7 +30,7 @@ const App = () => {
             <Route path="/element">
               <Element />
             </Route>
-            <Route path="/MyEditor/:id/:title">
+            <Route path="/MyEditor/:id">
               <MyEditor theme={'cxd'} />
             </Route>
           </Switch>
